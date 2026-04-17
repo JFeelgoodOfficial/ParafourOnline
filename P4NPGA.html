@@ -529,19 +529,36 @@ async function submit(){
     timestamp:new Date().toISOString()
   };
   // REPLACE with your CRM webhook endpoint:
-  var EP='YOUR_WEBHOOK_URL_HERE';
-  try{if(EP!=='YOUR_WEBHOOK_URL_HERE')await fetch(EP,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pl)});}catch(e){}
-  if(window.gtag)gtag('event','lead_capture',{event_category:'form',segment:pl.segment,priority:pl.priority,source:pl.source});
-  try{sessionStorage.removeItem('p4');}catch(e){}
-  document.getElementById('fb').style.display='none';
-  document.getElementById('cb').style.display='none';
-  var sc=document.getElementById('succ');sc.classList.add('show');
-  document.getElementById('sop').textContent=pl.operationType;
-  document.getElementById('spri').textContent=pl.priority;
-  document.getElementById('stl').textContent=pl.timeline;
-  document.getElementById('sfu').textContent=pl.followUp.toLowerCase();
-  sc.scrollIntoView({behavior:'smooth',block:'start'});
-}
+  var SUPABASE_URL = 'https://YOUR-PROJECT-ID.supabase.co';
+var SUPABASE_KEY = 'YOUR-ANON-KEY';
+
+try {
+  await fetch(SUPABASE_URL + '/rest/v1/leads', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({
+      name:           pl.name,
+      company:        pl.company,
+      email:          pl.email,
+      mobile:         pl.mobile,
+      state_region:   pl.stateRegion,
+      operation_type: pl.operationType,
+      priority:       pl.priority,
+      timeline:       pl.timeline,
+      segment:        pl.segment,
+      follow_up:      pl.followUp,
+      utm_source:     pl.utm_source,
+      utm_medium:     pl.utm_medium,
+      utm_campaign:   pl.utm_campaign,
+      source:         pl.source
+    })
+  });
+} catch(e) {}
 
 // Phone formatting
 document.getElementById('fm').addEventListener('input',function(){
